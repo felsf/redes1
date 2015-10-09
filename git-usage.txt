@@ -1,0 +1,21 @@
+1) Download do Git e instalar normal, só avançando. Link: https://git-scm.com/download/win
+
+2) Ir para o diretório do seu PC onde queira baixar o projeto, clicar com o botão direito e selecionar "GIT bash Here";
+
+3) Clonar este repositório. O comando é "git clone <link-repositório>";
+
+	- Exemplo p/ este repositório (sem aspas): "git clone https://github.com/kdevelopers/redes1"
+	
+4) digitar no terminal o comando (sem aspas): "cd redes1".
+
+	- Isso fará com que o sistema vá para o diretório inferior referente à pasta do projeto clonado do git, no caso, de nome "redes1".
+
+----------------------------------------------------------------------------------------------------
+
+Informações Adicionais:
+
+1) Adicionar novo arquivo ao projeto: "git add <nome-arquivo>.extensao";
+	
+	- Exemplo (sem aspas): "git add testes.txt"
+	
+2)
