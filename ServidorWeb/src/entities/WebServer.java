@@ -5,10 +5,12 @@
  */
 package entities;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import static maintance.MainClass.port;
 
 /**
  *
@@ -20,6 +22,7 @@ public class WebServer {
     private int port;
     private ArrayList<WebClient> clients = new ArrayList<WebClient>();
     
+    private int connected = 0;
     private Thread serverThread;
     
     public WebServer(String host, int port) {
@@ -38,12 +41,25 @@ public class WebServer {
                 */
                 
                 @Override
-                public void run() {
+                public void run() {                                       
                     while(true)
                     {
                         try
                         {
-                            Socket client = socket.accept(); // Espera até que um Cliente se conecte.                        
+                            Socket client = socket.accept(); // Espera até que um Cliente se conecte.
+                            connected++;       
+                            
+                            while(connected != clients.size()) {
+                                new WebClient("WebClient", client);
+                            }
+                            
+                            WebClient wc = clients.get(clients.size() - 1);
+                            wc.setSocket(client);
+                            System.out.println("Client '"+wc.getName()+"' connected");                            
+                            //WebClient wc = new WebClient(connected.getName(), client);                    
+                            
+                            
+                            //System.out.println("Requ: "+new DataInputStream(client.getInputStream()).readUTF());
                         }
                         catch(IOException ex)
                         {
@@ -61,7 +77,7 @@ public class WebServer {
         }
     }   
     
-    public void addWebClient(WebClient webClient) {
+    public void addWebClient(WebClient webClient) {        
         clients.add(webClient);
     }
     
