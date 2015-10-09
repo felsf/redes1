@@ -26,5 +26,7 @@ Informações Adicionais:
 
 3) Enviar atualizações ao repositório (sem aspas): "git push --all"
 
+	- Antes de dar o PUSH, utilizar o "git add arquivo/diretorio"
+
 
 Para o "git push --all", será necessário o Usuário e Senha do github original do projeto.
