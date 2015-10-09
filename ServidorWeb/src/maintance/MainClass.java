@@ -5,15 +5,23 @@
  */
 package maintance;
 
+import entities.*;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 /**
  *
  * @author Felipe
  */
 public class MainClass {
     
-    public static void main(String[] args)
+    public static final int port = 8078;
+    public static WebServer server = new WebServer("127.0.0.1", port);            
+    
+    public static void main(String[] args) throws UnknownHostException, IOException
     {
-        
+        new WebClient("Felipe", new Socket("127.0.0.1", port));
     }
     
 }
