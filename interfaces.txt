@@ -1,0 +1,32 @@
+1) Utilizar uma Classe de Painel que EXTENDS de JPanel
+
+2) Atribuir a todos os JFrames criados, ela.  ---> this.add(new Painel());
+
+	- A regra acima é necessária pra gente manter o mesmo Papel de Parede no programa, para padronizar!
+	
+3) Ícone e Wallpapers a serem definidos
+
+
+----------------------------------------------------
+
+Janelas (classes que EXTENDS de JFrame) necessárias:
+
+
+1) Tela de Inicializar o servidor
+
+	--> JLabel (Host), JTextField (endereço host)
+	--> JLabel (Port), JTextField (porta do servidor)
+	
+2) Tela de Menu com botões grandes para ficar mais bonito:
+
+	--> Conectar Client;
+	--> Lista de Clients conectados;
+	--> Status do Servidor;
+	--> Quit;
+	
+	
+
+	-------------------------------------------------------
+	
+	A parte de requisição de URLs ainda vai ser vista.
+	Isso é só uma base, qualquer pode dar sua opinião.
