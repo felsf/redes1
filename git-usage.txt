@@ -1,3 +1,5 @@
+##################### Instruções do git
+
 1) Download do Git e instalar normal, só avançando. Link: https://git-scm.com/download/win
 
 2) Ir para o diretório do seu PC onde queira baixar o projeto, clicar com o botão direito e selecionar "GIT bash Here";
@@ -18,4 +20,11 @@ Informações Adicionais:
 	
 	- Exemplo (sem aspas): "git add testes.txt"
 	
-2)
+2) Comentar modificações de arquivos (logo após atualizar determinado arquivo): git commit -m "mensagem".
+
+	- Exemplo: git commit -m "atualização inicial"
+
+3) Enviar atualizações ao repositório (sem aspas): "git push --all"
+
+
+Para o "git push --all", será necessário o Usuário e Senha do github original do projeto.
