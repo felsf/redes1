@@ -8,6 +8,7 @@ package entities;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  *
@@ -17,6 +18,7 @@ public class WebServer {
     private ServerSocket socket;
     private String host;
     private int port;
+    private ArrayList<WebClient> clients = new ArrayList<WebClient>();
     
     private Thread serverThread;
     
@@ -30,14 +32,18 @@ public class WebServer {
         {
             socket = new ServerSocket(port);
             serverThread = new Thread(new Runnable() {
-
+                   
+                /*
+                    Thread necessário para que múltiplos clientes possam se conectar.
+                */
+                
                 @Override
                 public void run() {
                     while(true)
                     {
                         try
                         {
-                            Socket client = socket.accept();                        
+                            Socket client = socket.accept(); // Espera até que um Cliente se conecte.                        
                         }
                         catch(IOException ex)
                         {
@@ -54,7 +60,11 @@ public class WebServer {
             ex.printStackTrace();
         }
     }   
-
+    
+    public void addWebClient(WebClient webClient) {
+        clients.add(webClient);
+    }
+    
     public String getHost() {
         return host;
     }
