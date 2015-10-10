@@ -5,8 +5,14 @@
  */
 package entities;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -22,8 +28,8 @@ public class WebServer {
     private int port;
     private ArrayList<WebClient> clients = new ArrayList<WebClient>();
     
-    private int connected = 0;
     private Thread serverThread;
+    private Thread communicationThread;
     
     public WebServer(String host, int port) {
         this.host = host;
@@ -46,20 +52,15 @@ public class WebServer {
                     {
                         try
                         {
-                            Socket client = socket.accept(); // Espera até que um Cliente se conecte.
-                            connected++;       
+                            Socket client = socket.accept(); // Espera até que um Cliente se conecte.                            
                             
-                            while(connected != clients.size()) {
-                                new WebClient("WebClient", client);
-                            }
+                            BufferedReader br = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                            PrintWriter output = new PrintWriter(new BufferedWriter(new OutputStreamWriter(client.getOutputStream())));
+                            output.println("Returned GET");
+                            output.flush();
+                            System.out.println("Requisição HTTP: "+br.readLine());                                                                             
+                            System.out.println("Client Connected");                         
                             
-                            WebClient wc = clients.get(clients.size() - 1);
-                            wc.setSocket(client);
-                            System.out.println("Client '"+wc.getName()+"' connected");                            
-                            //WebClient wc = new WebClient(connected.getName(), client);                    
-                            
-                            
-                            //System.out.println("Requ: "+new DataInputStream(client.getInputStream()).readUTF());
                         }
                         catch(IOException ex)
                         {
@@ -69,7 +70,28 @@ public class WebServer {
                 }
             });
             
+            communicationThread = new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    while(true)
+                    {
+                        for(int a  = 0; a < clients.size(); a++)
+                        {
+                            /*try
+                            {
+                                new DataInputStream(clients.get(a).getSocket().getInputStream()).readUTF();
+                            }
+                            catch(IOException ex) {
+                                ex.printStackTrace();
+                            }*/
+                        }
+                    }
+                }
+            });
+            
             serverThread.start();
+            communicationThread.start();
         }
         catch(IOException ex)
         {

@@ -21,7 +21,7 @@ public class MainClass {
     
     public static void main(String[] args) throws UnknownHostException, IOException
     {
-        new WebClient("Felipe");
+        //new WebClient("Felipe");
     }
     
 }
