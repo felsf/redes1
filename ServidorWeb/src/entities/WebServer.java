@@ -7,16 +7,15 @@ package entities;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import static maintance.MainClass.port;
+import java.util.Date;
 
 /**
  *
@@ -52,15 +51,47 @@ public class WebServer {
                     {
                         try
                         {
-                            Socket client = socket.accept(); // Espera até que um Cliente se conecte.                            
+                            Socket client = socket.accept(); // Espera até que um Cliente se conecte.                     
+                            BufferedReader br = new BufferedReader(new InputStreamReader(client.getInputStream()));                       
                             
-                            BufferedReader br = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                            PrintWriter output = new PrintWriter(new BufferedWriter(new OutputStreamWriter(client.getOutputStream())));
-                            output.println("Returned GET");
-                            output.flush();
-                            System.out.println("Requisição HTTP: "+br.readLine());                                                                             
-                            System.out.println("Client Connected");                         
+                            BufferedReader file_reader = null;
+                            String http_message = "";
+                            String file_content = "";
+                            String request = br.readLine();
+                            String file = request.substring(4, request.indexOf("H"));             
+                            String type = request.substring(file.length()-3, file.length()-1);
                             
+                            
+                            file = file.replaceFirst("/", "");                         
+                            System.out.println(type);
+                            
+                            try
+                            {
+                                http_message += "HTTP/1.1 200 OK \n";
+                                file_reader = new BufferedReader(new FileReader("src/files/"+file));
+                                System.out.println("Arquivo localizado: "+file);
+                            }
+                            catch(FileNotFoundException ex)
+                            {
+                                http_message += "HTTP/1.1 404 FILE NOT FOUND \n";
+                                http_message += "Date: "+new Date()+" \n";
+                                System.out.println("Arquivo não encontrado: "+file);
+                                client.close();
+                                return;
+                            }   
+                            
+                            String line;
+                            
+                            while((line = file_reader.readLine()) != null)
+                                file_content += (line + "\n");
+                            
+                            
+                            http_message += "Date: "+new Date()+" \n";
+                            
+                            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+                            bw.write("HTTP/1.1 200 OK \n Date: Fri, 31 Dec 1999 23:59:59 GMT \n Content-Type: text/html \n Content-Length: 1354 \n\n <html>abcde<html/>");
+                            bw.flush();
+                            client.close();
                         }
                         catch(IOException ex)
                         {
