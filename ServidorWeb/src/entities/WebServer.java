@@ -59,39 +59,61 @@ public class WebServer {
                             String file_content = "";
                             String request = br.readLine();
                             String file = request.substring(4, request.indexOf("H"));             
-                            String type = request.substring(file.length()-3, file.length()-1);
-                            
-                            
-                            file = file.replaceFirst("/", "");                         
-                            System.out.println(type);
-                            
-                            try
-                            {
-                                http_message += "HTTP/1.1 200 OK \n";
-                                file_reader = new BufferedReader(new FileReader("src/files/"+file));
-                                System.out.println("Arquivo localizado: "+file);
-                            }
-                            catch(FileNotFoundException ex)
-                            {
-                                http_message += "HTTP/1.1 404 FILE NOT FOUND \n";
-                                http_message += "Date: "+new Date()+" \n";
-                                System.out.println("Arquivo não encontrado: "+file);
-                                client.close();
-                                return;
-                            }   
-                            
-                            String line;
-                            
-                            while((line = file_reader.readLine()) != null)
-                                file_content += (line + "\n");
-                            
-                            
-                            http_message += "Date: "+new Date()+" \n";
+                            String type = request.substring(file.length(), file.length()+3);
+                            String content_type = "Content-type: ";
+                            String server = "jPHP WEB SERVER";
                             
                             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
-                            bw.write("HTTP/1.1 200 OK \n Date: Fri, 31 Dec 1999 23:59:59 GMT \n Content-Type: text/html \n Content-Length: 1354 \n\n <html>abcde<html/>");
-                            bw.flush();
-                            client.close();
+                            
+                            switch(type)
+                            {
+                                case "txt": type += "text/html"; break;
+                                case "jpg": case "png": case "gif": case "jpeg": case "bmp": case "ico": type += "image"; break;                                    
+                            }                           
+                            
+                            file = file.replaceFirst("/", "");                        
+                            
+                            {
+                                try
+                                {
+                                    file_reader = new BufferedReader(new FileReader("src/files/"+file));
+                                    http_message += "HTTP/1.1 200 OK \n";
+                                    http_message += type+"\n";
+                                    http_message += server+"\n";
+                                    http_message += "Date: "+new Date()+" \n\n";
+                                    
+                                    System.out.println("Arquivo localizado: "+file);
+                                    String line;
+                                    
+                                    while((line = file_reader.readLine()) != null)
+                                        file_content += (line + "\n");                                    
+                                    
+                                    http_message += file_content;
+                                    
+                                    bw.write(http_message);
+                                    bw.flush();
+                                                                      
+                                }
+                                catch(FileNotFoundException ex)
+                                {                                    
+                                    http_message += "HTTP/1.1 404 Not Found \n";
+                                    http_message += type+"\n";
+                                    http_message += server+"\n";
+                                    http_message += "Date: "+new Date()+" \n\n";                                
+                                    http_message += "<html><center><h1>HTTP ERROR 404</h1><br><br>Arquivo nao localizado no Sistema</center></html>";
+
+                                    //System.out.println(http_message);
+                                    bw.write(http_message);
+                                    
+                                    System.out.println("Arquivo não encontrado: "+file);
+                                    //client.close();                                    
+                                    //return;
+                                }
+                                
+                                bw.flush();
+                                client.close();
+                            }
+                            
                         }
                         catch(IOException ex)
                         {
