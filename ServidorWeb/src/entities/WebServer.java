@@ -14,7 +14,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Date;
 
 /**
@@ -24,11 +24,12 @@ import java.util.Date;
 public class WebServer {
     private ServerSocket socket;
     private String host;
-    private int port;
-    private ArrayList<WebClient> clients = new ArrayList<WebClient>();
+    private int port;    
     
     private Thread serverThread;
     private Thread communicationThread;
+    
+    private Vector<Socket> clients = new Vector<Socket>();
     
     public WebServer(String host, int port) {
         this.host = host;
@@ -151,10 +152,6 @@ public class WebServer {
             ex.printStackTrace();
         }
     }   
-    
-    public void addWebClient(WebClient webClient) {        
-        clients.add(webClient);
-    }
     
     public String getHost() {
         return host;

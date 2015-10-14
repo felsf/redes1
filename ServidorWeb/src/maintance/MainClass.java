@@ -7,7 +7,6 @@ package maintance;
 
 import entities.*;
 import java.io.IOException;
-import java.net.Socket;
 import java.net.UnknownHostException;
 
 /**
@@ -21,7 +20,7 @@ public class MainClass {
     
     public static void main(String[] args) throws UnknownHostException, IOException
     {
-        //new WebClient("Felipe");
+        
     }
     
 }
