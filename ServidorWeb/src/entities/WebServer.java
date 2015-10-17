@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.util.Vector;
 import java.util.Date;
 
@@ -61,16 +62,10 @@ public class WebServer {
                             String request = br.readLine();
                             String file = request.substring(4, request.indexOf("H"));             
                             String type = request.substring(file.length(), file.length()+3);
-                            String content_type = "Content-type: ";
-                            String server = "jPHP WEB SERVER";
+                            String content_type = "Content-type: text/html";
+                            String server = "Server: jPHP WEB SERVER";
                             
-                            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
-                            
-                            switch(type)
-                            {
-                                case "txt": type += "text/html"; break;
-                                case "jpg": case "png": case "gif": case "jpeg": case "bmp": case "ico": type += "image"; break;                                    
-                            }                           
+                            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));                                             
                             
                             file = file.replaceFirst("/", "");                        
                             
@@ -78,18 +73,32 @@ public class WebServer {
                                 try
                                 {
                                     file_reader = new BufferedReader(new FileReader("src/files/"+file));
+                                    
+                                    switch(type)
+                                    {
+                                        case "txt": case "dat": case "":
+                                        {
+                                            String line;
+                                                                                
+                                            while((line = file_reader.readLine()) != null) file_content += (line + "\n");
+                                            break;
+                                        } 
+                                        case "jpg": case "png": case "gif": case "jpeg": case "bmp": case "ico": {                                            
+                                            file_content += "<img src='"+new URL(getClass().getResource("/files/"+file).toString())
+                                                    + "'>";
+                                            break; // new URL(getClass().getResource("/files/"+file).toString()
+                                        } 
+                                    }                            
+                                    
                                     http_message += "HTTP/1.1 200 OK \n";
-                                    http_message += type+"\n";
+                                    http_message += content_type+"\n";
                                     http_message += server+"\n";
                                     http_message += "Date: "+new Date()+" \n\n";
                                     
-                                    System.out.println("Arquivo localizado: "+file);
-                                    String line;
+                                    System.out.println("Arquivo localizado: "+file);                                                                
                                     
-                                    while((line = file_reader.readLine()) != null)
-                                        file_content += (line + "\n");                                    
-                                    
-                                    http_message += file_content;
+                                    http_message += file_content+"\n";
+                                    System.out.println(http_message);
                                     
                                     bw.write(http_message);
                                     bw.flush();
