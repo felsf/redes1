@@ -7,18 +7,18 @@ package entities;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Vector;
 import java.util.Date;
-import java.util.List;
 
 /**
  *
@@ -56,81 +56,77 @@ public class WebServer {
                         try
                         {
                             Socket client = socket.accept(); // Espera até que um Cliente se conecte.                     
-                            BufferedReader br = new BufferedReader(new InputStreamReader(client.getInputStream()));                       
+                            BufferedReader br = new BufferedReader(new InputStreamReader(client.getInputStream()));                                                  
                             
-                            BufferedReader file_reader = null;
-                            String http_message = "";
-                            String file_content = "";
+                            String http_message = "";                            
                             String request = br.readLine();
+                            File f = null;
                             
                             if(request != null) 
                             {                          
                             
                                 String file = request.substring(4, request.indexOf("H"));             
                                 String type = request.substring(file.length(), file.length()+3);
-                                String content_type = "Content-type: image/jpeg";
-                                String server = "Server: jPHP WEB SERVER";
+                                String content_type = "Content-type: ";
+                                String server = "Server: kPHP WEB SERVER";
 
                                 BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));                                             
-
-                                file = file.replaceFirst("/", "");                        
-
-
+                                file = file.replaceFirst("/", "");                                                        
+                                PrintStream ps = new PrintStream(client.getOutputStream()); // Cria uma Transmissão de gravação a partir do Client conectado
                                     try
                                     {
-                                        file_reader = new BufferedReader(new FileReader("src/files/"+file));
-
+                                        f = new File("src/files/"+file);
+                                        BufferedReader file_reader = new BufferedReader(new FileReader(f));
                                         switch(type)
                                         {
-                                            case "txt": case "dat": case "":
+                                            case "txt": case "dat": case "html": case "php": case "java": case "htm": case "phtml":
+                                            case "py":
                                             {
-                                                String line;
-
-                                                while((line = file_reader.readLine()) != null) file_content += (line + "\n");
+                                                content_type += "text/html";
                                                 break;
                                             } 
                                             case "jpg": case "png": case "gif": case "jpeg": case "bmp": case "ico": {                                            
-                                                file_content += "<img src='"+new URL(getClass().getResource("/files/"+file).toString())
-                                                        + "'>";
-                                                break; // new URL(getClass().getResource("files/"+file).toString())
-                                                    //http://rlv.zcache.com.br/etiqueta_do_emoji_da_lua_adesivo-r30e8140bfce14caa898f5e78a461253a_v9waf_8byvr_324.jpg
+                                                content_type += "image/"+((type.equals("jpg") || type.equals("jpeg")) ? "jpeg" : type);                                                
+                                                break; 
                                             } 
-                                        }                            
-
+                                        }                           
+                                        
                                         http_message += "HTTP/1.1 200 OK \n";
                                         http_message += content_type+"\n";
+                                        http_message += "Content-Length: "+new File("src/files/"+file).length()+"\n";
                                         http_message += server+"\n";
                                         http_message += "Date: "+new Date()+" \n\n";
-
-                                        System.out.println("Arquivo localizado: "+file);                                                                
-
-                                        http_message += file_content+"\n";
-                                        System.out.println(http_message);
-
-                                        bw.write(http_message);
-                                        bw.flush();
+                                        
+                                        byte[] buffer = new byte[600]; // Cria um Array de Bytes                                    
+                                        FileInputStream fs = new FileInputStream(f); // Cria uma Stream de recebimento de arquivo                                    
+                                        int read_bytes; // Conta até onde o buffer foi lido.                               
+                                    
+                                        ps.print(http_message); // Antes de gravar o conteúdo do arquivo, ele grava a HTTP RESPONSE.
+                                    
+                                        while((read_bytes = fs.read(buffer)) > 0) // Ele lê uma sequência de bytes até alcançar o tamanho do buffer.
+                                            ps.write(buffer, 0, read_bytes); // Grava a sequência lida no PrintStreamer do Client                                                                           
+                                    
+                                        ps.close(); // Fecha a PrintStream do Client                                        
+                                        
+                                        System.out.println("Arquivo localizado: "+file);                                                           
 
                                     }
                                     catch(FileNotFoundException ex)
-                                    {                                    
+                                    {
                                         http_message += "HTTP/1.1 404 Not Found \n";
-                                        http_message += type+"\n";
+                                        http_message += content_type+"\n";
                                         http_message += server+"\n";
-                                        http_message += "Date: "+new Date()+" \n\n";                                
-                                        http_message += "<html><center><h1>HTTP ERROR 404</h1><br><br>Arquivo nao localizado no Sistema</center></html>";
-
-                                        //System.out.println(http_message);
-                                        bw.write(http_message);
-
-                                        System.out.println("Arquivo não encontrado: "+file);
-                                        //client.close();                                    
-                                        //return;
+                                        http_message += "Date: "+new Date()+"\n\n";                                        
+                                        http_message += "<center><h1>HTTP ERROR 404</h1><br><br>Arquivo nao localizado no Sistema</center>";                                                                               
+                                        
+                                        ps.print(http_message);                                        
+                                        ps.close();                                        
+                                        System.out.println("Arquivo não encontrado: "+file);                             
+                                        
                                     }
-
-                                    bw.flush();
-                                    client.close();
-                                }
-                            
+                                    
+                                    client.close(); // Fecha a conexão do Client.
+                                }                            
                         }
                         catch(IOException ex)
                         {
