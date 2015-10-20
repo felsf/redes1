@@ -15,8 +15,10 @@ import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -34,7 +36,7 @@ public class WebServer {
     
     public WebServer(String host, int port) {
         this.host = host;
-        this.port = port;
+        this.port = port;      
         
         System.out.println("Server started at "+host+" listening on Port "+port);
         
@@ -60,69 +62,74 @@ public class WebServer {
                             String http_message = "";
                             String file_content = "";
                             String request = br.readLine();
-                            String file = request.substring(4, request.indexOf("H"));             
-                            String type = request.substring(file.length(), file.length()+3);
-                            String content_type = "Content-type: text/html";
-                            String server = "Server: jPHP WEB SERVER";
                             
-                            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));                                             
+                            if(request != null) 
+                            {                          
                             
-                            file = file.replaceFirst("/", "");                        
-                            
-                            {
-                                try
-                                {
-                                    file_reader = new BufferedReader(new FileReader("src/files/"+file));
-                                    
-                                    switch(type)
-                                    {
-                                        case "txt": case "dat": case "":
-                                        {
-                                            String line;
-                                                                                
-                                            while((line = file_reader.readLine()) != null) file_content += (line + "\n");
-                                            break;
-                                        } 
-                                        case "jpg": case "png": case "gif": case "jpeg": case "bmp": case "ico": {                                            
-                                            file_content += "<img src='"+new URL(getClass().getResource("/files/"+file).toString())
-                                                    + "'>";
-                                            break; // new URL(getClass().getResource("/files/"+file).toString()
-                                        } 
-                                    }                            
-                                    
-                                    http_message += "HTTP/1.1 200 OK \n";
-                                    http_message += content_type+"\n";
-                                    http_message += server+"\n";
-                                    http_message += "Date: "+new Date()+" \n\n";
-                                    
-                                    System.out.println("Arquivo localizado: "+file);                                                                
-                                    
-                                    http_message += file_content+"\n";
-                                    System.out.println(http_message);
-                                    
-                                    bw.write(http_message);
-                                    bw.flush();
-                                                                      
-                                }
-                                catch(FileNotFoundException ex)
-                                {                                    
-                                    http_message += "HTTP/1.1 404 Not Found \n";
-                                    http_message += type+"\n";
-                                    http_message += server+"\n";
-                                    http_message += "Date: "+new Date()+" \n\n";                                
-                                    http_message += "<html><center><h1>HTTP ERROR 404</h1><br><br>Arquivo nao localizado no Sistema</center></html>";
+                                String file = request.substring(4, request.indexOf("H"));             
+                                String type = request.substring(file.length(), file.length()+3);
+                                String content_type = "Content-type: image/jpeg";
+                                String server = "Server: jPHP WEB SERVER";
 
-                                    //System.out.println(http_message);
-                                    bw.write(http_message);
-                                    
-                                    System.out.println("Arquivo não encontrado: "+file);
-                                    //client.close();                                    
-                                    //return;
+                                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));                                             
+
+                                file = file.replaceFirst("/", "");                        
+
+
+                                    try
+                                    {
+                                        file_reader = new BufferedReader(new FileReader("src/files/"+file));
+
+                                        switch(type)
+                                        {
+                                            case "txt": case "dat": case "":
+                                            {
+                                                String line;
+
+                                                while((line = file_reader.readLine()) != null) file_content += (line + "\n");
+                                                break;
+                                            } 
+                                            case "jpg": case "png": case "gif": case "jpeg": case "bmp": case "ico": {                                            
+                                                file_content += "<img src='"+new URL(getClass().getResource("/files/"+file).toString())
+                                                        + "'>";
+                                                break; // new URL(getClass().getResource("files/"+file).toString())
+                                                    //http://rlv.zcache.com.br/etiqueta_do_emoji_da_lua_adesivo-r30e8140bfce14caa898f5e78a461253a_v9waf_8byvr_324.jpg
+                                            } 
+                                        }                            
+
+                                        http_message += "HTTP/1.1 200 OK \n";
+                                        http_message += content_type+"\n";
+                                        http_message += server+"\n";
+                                        http_message += "Date: "+new Date()+" \n\n";
+
+                                        System.out.println("Arquivo localizado: "+file);                                                                
+
+                                        http_message += file_content+"\n";
+                                        System.out.println(http_message);
+
+                                        bw.write(http_message);
+                                        bw.flush();
+
+                                    }
+                                    catch(FileNotFoundException ex)
+                                    {                                    
+                                        http_message += "HTTP/1.1 404 Not Found \n";
+                                        http_message += type+"\n";
+                                        http_message += server+"\n";
+                                        http_message += "Date: "+new Date()+" \n\n";                                
+                                        http_message += "<html><center><h1>HTTP ERROR 404</h1><br><br>Arquivo nao localizado no Sistema</center></html>";
+
+                                        //System.out.println(http_message);
+                                        bw.write(http_message);
+
+                                        System.out.println("Arquivo não encontrado: "+file);
+                                        //client.close();                                    
+                                        //return;
+                                    }
+
+                                    bw.flush();
+                                    client.close();
                                 }
-                                
-                                bw.flush();
-                                client.close();
-                            }
                             
                         }
                         catch(IOException ex)
