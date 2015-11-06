@@ -1,0 +1,14 @@
+<script>
+	var v = 0;
+	function update()
+	{
+		var agora = new Date();
+		document.getElementById('time').innerHTML = agora.getHours()+":"+(agora.getMinutes() < 10 ? "0"+agora.getMinutes() : agora.getMinutes())+":"+(agora.getSeconds() < 10 ? "0"+agora.getSeconds() : agora.getSeconds());
+	}
+</script>
+
+<body onLoad="setInterval(function(){update()}, 1000)">
+<div>
+	<div><span>Agora sao: </span><span id='time'></span></div>	
+</div>
+<body>

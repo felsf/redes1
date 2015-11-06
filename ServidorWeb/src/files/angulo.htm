@@ -1,0 +1,17 @@
+<script src="angular.min.js"></script>
+<script>
+    angular.module('MyApp', []).controller('ListaController', function($scope) {
+        $scope.lista = [];     
+    });
+</script>
+
+<body ng-app="MyApp">
+    <center><h2>Exemplo de Lista em AngularJS</h2>
+    <div ng-controller='ListaController'>
+        <input type='number' ng-model='texter'>
+        <input type='button' ng-model='adder' value="Add!" ng-click='lista.push(texter)'>
+        <input type='button' ng-model='popper' value="Delete Last!" ng-click='lista.pop()'>
+        <input type='button' ng-model='cleaner' value="Clear!" ng-click='lista.length = 0'>
+        <h2>Lista: {{lista}}</h2>
+    </div></center>
+</body>
