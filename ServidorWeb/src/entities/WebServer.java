@@ -29,8 +29,7 @@ public class WebServer {
     private String host;
     private int port;    
     
-    private Thread serverThread;
-    private Thread communicationThread;
+    private Thread serverThread;  
     
     private Vector<Socket> clients = new Vector<Socket>();
     
@@ -134,30 +133,9 @@ public class WebServer {
                         }
                     }
                 }
-            });
+            });    
             
-            communicationThread = new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    while(true)
-                    {
-                        for(int a  = 0; a < clients.size(); a++)
-                        {
-                            /*try
-                            {
-                                new DataInputStream(clients.get(a).getSocket().getInputStream()).readUTF();
-                            }
-                            catch(IOException ex) {
-                                ex.printStackTrace();
-                            }*/
-                        }
-                    }
-                }
-            });
-            
-            serverThread.start();
-            communicationThread.start();
+            serverThread.start();           
         }
         catch(IOException ex)
         {
