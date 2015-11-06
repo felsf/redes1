@@ -1,1 +1,0 @@
-Package voltada aos recursos do servidor web.
