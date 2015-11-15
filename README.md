@@ -23,6 +23,14 @@ Projeto que consiste me criar um servidor HTTP em java que responde a requisi√ß√
 
 ![alt tag](https://github.com/kdevelopers/redes1/blob/master/ServidorWeb/src/prints/p1.PNG)
 
+-----------------------------------------------------------------
+
 ![alt tag](https://github.com/kdevelopers/redes1/blob/master/ServidorWeb/src/prints/p2.PNG)
 
+-----------------------------------------------------------------
+
 ![alt tag](https://github.com/kdevelopers/redes1/blob/master/ServidorWeb/src/prints/p3.PNG)
+
+-----------------------------------------------------------------
+
+![alt tag](https://github.com/kdevelopers/redes1/blob/master/ServidorWeb/src/prints/p4.PNG)
