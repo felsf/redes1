@@ -51,6 +51,7 @@ public class MainClass {
         confirm_dialog.setVisible(false);
         confirm_dialog.setLocationRelativeTo(null);
         confirm_dialog.add(new Confirm());
+        confirm_dialog.setTitle("Conexão ao servidor");
         
         request_history = new JPrincipal();
         request_history.setSize(400, 300);
@@ -58,6 +59,7 @@ public class MainClass {
         request_history.setVisible(false);
         request_history.setLocationRelativeTo(null);
         request_history.add(request_panel);
+        request_history.setTitle("Histórico de requisições.");
         
         client_history = new JPrincipal();
         client_history.setSize(400, 300);
@@ -65,6 +67,7 @@ public class MainClass {
         client_history.setVisible(false);
         client_history.setLocationRelativeTo(null);
         client_history.add(client_panel);
+        client_history.setTitle("Histórico de conexões.");
         
         about = new JPrincipal();
         about.setSize(400, 300);
@@ -72,6 +75,7 @@ public class MainClass {
         about.setVisible(false);
         about.setLocationRelativeTo(null);
         about.add(about_panel);
+        about.setTitle("About this application");
         
         window = new JPrincipal();
         window.add(index_panel);        

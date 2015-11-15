@@ -152,7 +152,7 @@ public class WebServer {
                                     content_type += "text/html";
                                     break;
                                 } 
-                                case "jpg": case "png": case "gif": case "jpeg": case "bmp": case "ico": 
+                                case "jpg": case "png": case "gif": case "jpeg": case "bmp": 
                                 {                                            
                                     content_type += "image/"+((type.equals("jpg") || type.equals("jpeg")) ? "jpeg" : type);                                                
                                     break; 
@@ -188,8 +188,8 @@ public class WebServer {
                                 Antes de processar o arquivo, ele escreve no objeto responsável pela transmissão
                                 de dados ao cliente, a requisição HTTP, pois é depois que a mensagem de requisição é
                                 enviada que os dados do arquivo solicitados são enviados.
-                            */
-                            System.out.println("Host solicitante: "+client.getLocalAddress());
+                            */                            
+                            MainClass.client_panel.addLog("Connected: "+client.getRemoteSocketAddress().toString());
                             ps.print(http_message);                             
                             /*
                                 Lê até X bytes por vez, onde X é o tamanho do Array de Bytes, enquanto
@@ -208,6 +208,7 @@ public class WebServer {
                             
                             MainClass.request_panel.addLog("Requested File: "+file+" - STATUS: 200");
                             System.out.println("Arquivo localizado: "+file);   // Printa no Console o arquivo localizado.             
+                            client.close();
                             ps.close(); // Fecha o Objeto de transmissão ao Client.                                         
                                 
                             }
